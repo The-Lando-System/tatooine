@@ -89,10 +89,15 @@ module.exports = function(app) {
   // Execute a request
   app.post('/execute', function(req,res) {
     let webRequest = webRequestUtils.convertBodyToRequest(req.body);
-
-    webRequestUtils.executeRequest(webRequest, (response) => {
-      return res.status(200).send(response);
-    });    
+    if (webRequest.AuthType === 'OAuth2') {
+      webRequestUtils.executeOauthRequest(webRequest, (response) => {
+        return res.status(200).send(response);
+      }); 
+    } else {
+      webRequestUtils.executeRequest(webRequest, (response) => {
+        return res.status(200).send(response);
+      });
+    }
   });
 
   // Execute a request by ID

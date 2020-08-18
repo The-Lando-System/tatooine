@@ -1,25 +1,76 @@
-const WebRequestModel = require('../models/WebRequest');
 const constants = require('../constants');
 const mongoose = require('mongoose');
 const request = require('request');
 
 module.exports = {
 
-  executeRequest: function(webRequest, callback) {
+  executeOauthRequest: function(webRequest, callback) {
+
+    const authStr = Buffer.from(
+      webRequest.ApiKey + ':' + webRequest.ApiSecret
+    ).toString('base64');
+
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + authStr
+    }
+
+    const options = {
+      url: webRequest.AuthUrl,
+      method: 'Post',
+      headers: headers,
+      form: {'grant_type': 'client_credentials'}
+    };
+
+    request(options, function(err, res, body) {
+      if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message)); }
+      if (res.statusCode === 400) { return callback(module.exports.convertToGenericResponse(500, 'Text', body)); }
+
+      try {
+        body = JSON.parse(body);
+      } catch(e) {
+        return callback(module.exports.convertToGenericResponse(500, 'Text', e));
+      }
+    
+      module.exports.executeRequest(webRequest, callback, body.access_token);
+    });
+
+  },
+
+  executeRequest: function(webRequest, callback, accessToken) {
 
     const options = {
       url: webRequest.Url,
-      method: webRequest.Method
+      method: webRequest.Method,
+      headers: {
+        'Content-Type' : webRequest.ContentType ? webRequest.ContentType : 'application/json'
+      }
     };
 
+    if (webRequest.Method === 'Post') {
+      options.json = JSON.parse(webRequest.RequestBody);
+    }
+
+    if (accessToken) {
+      options.headers['Authorization'] = `Bearer ${accessToken}`; 
+    }
+
     request(options, (err, res, body) => {
-      if (err) { console.log(`ERROR: ${err}`); }
-      return callback({
-        "Status": res.statusCode,
-        "ContentType": res.headers["content-type"],
-        "Data": body
-      });
+      if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message)); }
+      return callback(module.exports.convertToGenericResponse(
+        res.statusCode,
+        res.headers["content-type"],
+        body
+      ));
     });
+  },
+
+  convertToGenericResponse: function(status, contentType, data) {
+    return {
+      "Status": status,
+      "ContentType": contentType,
+      "Data": data
+    }
   },
 
   convertBodyToRequest: function(body) {

@@ -8,7 +8,7 @@ const requestSchema = new mongoose.Schema({
   Method:        { type: String, default: 'GET' },
   RequestBody:   { type: String, default: '' },
   ContentType:   { type: String, default: '' },
-  AuthType:      { type: String, default: 'OAuth2' },
+  AuthType:      { type: String, default: 'None' },
   AuthUrl:       { type: String, default: '' },
   ApiKey:        { type: String, default: '' },
   ApiSecret:     { type: String, default: '' }

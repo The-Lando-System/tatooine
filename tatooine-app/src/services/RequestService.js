@@ -43,7 +43,7 @@ export default {
         if (response.hasOwnProperty('Data')){
           resolve(this.formatResponseData(response));
         } else {
-          reject(response);
+          resolve(response);
         }
       })
       .catch((error) => {
@@ -77,9 +77,17 @@ export default {
   },
   formatResponseData(response) {
     try {
-      response['Data'] = JSON.stringify(JSON.parse(response['Data']),undefined,2).trim();
+      response['Data'] = JSON.stringify(JSON.parse(response['Data']), null, 2).trim();
     } catch (e) {
-      response['Data'] = response['Data'].trim();
+      try {
+        response['Data'] = JSON.stringify(response['Data'], null, 2);
+      } catch (e2) {
+        try {
+          response['Data'] = response['Data'].trim();
+        } catch (e3) {
+          response['Data'] = response.trim();
+        }
+      }
     }
     return response;
   }
