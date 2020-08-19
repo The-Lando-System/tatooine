@@ -19,6 +19,7 @@ app.get('/', function (req, res) {
 
 require('./routes/google-auth-filter')(app);
 require('./routes/web-request-routes')(app);
+require('./routes/deploy-routes')(app);
 
 if (!webRequestUtils.connectToDatabase()) return;
 
