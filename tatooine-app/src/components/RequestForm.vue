@@ -9,6 +9,10 @@
     <input v-model="request.Url" type="text" class="form-control" id="url-input" placeholder="https://example.com">
   </div>
   <div class="form-group">
+    <label for="json-path-input">JSON Path</label>
+    <input v-model="request.JsonPath" type="text" class="form-control" id="json-path-input" placeholder="$.phoneNumbers[:1].type">
+  </div>
+  <div class="form-group">
     <label for="method-input">Request Method</label>
     <select v-model="request.Method" id="method-input" class="custom-select">
       <option value="Get">Get</option>
@@ -19,6 +23,7 @@
     <label for="body-input">Body</label>
     <textarea v-model="request.RequestBody" class="form-control" id="body-input" rows="5" placeholder="{some:json}" />
   </div>
+  
   <div class="form-group">
     <label for="auth-input">Authentication</label>
     <select v-model="request.AuthType" id="auth-input" class="custom-select">

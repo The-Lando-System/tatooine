@@ -17,6 +17,7 @@
     </div>
     <div ref="resultsPane" class="result-data-pane">
       <div v-if="loading" class="loading"><i class="fas fa-2x fa-circle-notch fa-spin"></i></div>
+      <pre id="parsed-results-pre">Parsed Result: {{response.ParsedData}}</pre>
       <pre id="results-pre">{{response.Data}}</pre>
       <iframe id="results-iframe"></iframe>
     </div>
@@ -126,6 +127,10 @@ export default {
 }
 
 #results-pre {
+  overflow: unset;
+}
+
+#parsed-results-pre {
   overflow: unset;
 }
 

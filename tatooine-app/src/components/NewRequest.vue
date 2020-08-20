@@ -20,7 +20,8 @@ export default {
         'Url':'http://worldclockapi.com/api/json/est/now',
         'Method':'Get',
         'RequestBody':'',
-        'AuthType':'None'
+        'AuthType':'None',
+        'JsonPath':'$.currentDateTime'
       }
     }
   },

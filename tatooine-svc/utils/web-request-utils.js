@@ -1,6 +1,7 @@
 const constants = require('../constants');
 const mongoose = require('mongoose');
 const request = require('request');
+const jpath = require('jsonpath');
 
 module.exports = {
 
@@ -23,13 +24,13 @@ module.exports = {
     };
 
     request(options, function(err, res, body) {
-      if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message)); }
-      if (res.statusCode === 400) { return callback(module.exports.convertToGenericResponse(500, 'Text', body)); }
+      if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message, '')); }
+      if (res.statusCode === 400) { return callback(module.exports.convertToGenericResponse(500, 'Text', body, '')); }
 
       try {
         body = JSON.parse(body);
       } catch(e) {
-        return callback(module.exports.convertToGenericResponse(500, 'Text', e));
+        return callback(module.exports.convertToGenericResponse(500, 'Text', e, ''));
       }
     
       module.exports.executeRequest(webRequest, callback, body.access_token);
@@ -56,20 +57,36 @@ module.exports = {
     }
 
     request(options, (err, res, body) => {
-      if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message)); }
+      if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message, '')); }
+      
+      // Parse the json path
+      let obj = {};
+      try {
+        obj = JSON.parse(body);
+      } catch(e) {
+
+      }
+
+      let parsedData = '';
+      if (webRequest.JsonPath) {
+        parsedData = jpath.value(obj, webRequest.JsonPath);
+      }
+      
       return callback(module.exports.convertToGenericResponse(
         res.statusCode,
         res.headers["content-type"],
-        body
+        body,
+        parsedData
       ));
     });
   },
 
-  convertToGenericResponse: function(status, contentType, data) {
+  convertToGenericResponse: function(status, contentType, data, parsedData) {
     return {
       "Status": status,
       "ContentType": contentType,
-      "Data": data
+      "Data": data,
+      "ParsedData": parsedData
     }
   },
 
@@ -77,6 +94,7 @@ module.exports = {
     let request = {
       "Name": body.Name,
       "Url": body.Url,
+      "JsonPath": body.JsonPath,
       "Method": body.Method,
       "RequestBody": body.RequestBody,
       "ContentType": body.ContentType,

@@ -69,6 +69,7 @@ module.exports = function(app) {
 
       webRequest.Name = req.body.Name || webRequest.Name;
       webRequest.Url = req.body.Url || webRequest.Url;
+      webRequest.JsonPath = req.body.JsonPath || webRequest.JsonPath;
       webRequest.Method = req.body.Method || webRequest.Method;
       webRequest.RequestBody = req.body.RequestBody || webRequest.RequestBody;
       webRequest.ContentType = req.body.ContentType || webRequest.ContentType;

@@ -11,7 +11,8 @@ const requestSchema = new mongoose.Schema({
   AuthType:      { type: String, default: 'None' },
   AuthUrl:       { type: String, default: '' },
   ApiKey:        { type: String, default: '' },
-  ApiSecret:     { type: String, default: '' }
+  ApiSecret:     { type: String, default: '' },
+  JsonPath:      { type: String, default: '' }
 });
 
 module.exports = mongoose.model('WebRequest', requestSchema, 'Request');
