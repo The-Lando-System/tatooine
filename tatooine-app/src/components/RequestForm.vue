@@ -9,8 +9,12 @@
     <input v-model="request.Url" type="text" class="form-control" id="url-input" placeholder="https://example.com">
   </div>
   <div class="form-group">
-    <label for="json-path-input">JSON Path</label>
-    <input v-model="request.JsonPath" type="text" class="form-control" id="json-path-input" placeholder="$.phoneNumbers[:1].type">
+    <label for="json-path-category-input">JSON Path Category</label>
+    <input v-model="request.JsonPathCategory" type="text" class="form-control" id="json-path-category-input" placeholder="$.category[0]">
+  </div>
+  <div class="form-group">
+    <label for="json-path-data-input">JSON Path Data</label>
+    <input v-model="request.JsonPathData" type="text" class="form-control" id="json-path-data-input" placeholder="$.data[0]">
   </div>
   <div class="form-group">
     <label for="method-input">Request Method</label>

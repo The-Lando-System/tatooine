@@ -59,33 +59,51 @@ module.exports = {
     request(options, (err, res, body) => {
       if (err) { return callback(module.exports.convertToGenericResponse(500, 'Text', err.message, '')); }
       
-      // Parse the json path
-      let obj = {};
+      // Convert the body into JSON
+      let jsonBody = body;
       try {
-        obj = JSON.parse(body);
-      } catch(e) {
+        jsonBody = JSON.parse(body);
+      } catch {}
 
+      // If the body is not valid JSON, return it. It's probably text or HTML
+      try {
+        JSON.stringify(jsonBody)
+      } catch {
+        return callback(module.exports.convertToGenericResponse(
+          res.statusCode,
+          res.headers["content-type"],
+          body,
+          parsedData
+        ));
       }
 
-      let parsedData = '';
-      if (webRequest.JsonPath) {
-        parsedData = jpath.value(obj, webRequest.JsonPath);
-      }
-      
+      // Function to execute the json path
+      let tryJsonParse = function(obj, path) {
+        if (path) {
+          try {
+            return parsedData = jpath.value(obj, path);
+          } catch {
+            return null;
+          }
+        }
+      };
+
       return callback(module.exports.convertToGenericResponse(
         res.statusCode,
         res.headers["content-type"],
-        body,
-        parsedData
+        JSON.stringify(jsonBody, null, 2).trim(),
+        tryJsonParse(jsonBody, webRequest.JsonPathCategory),
+        tryJsonParse(jsonBody, webRequest.JsonPathData)
       ));
     });
   },
 
-  convertToGenericResponse: function(status, contentType, data, parsedData) {
+  convertToGenericResponse: function(status, contentType, data, parsedCategory, parsedData) {
     return {
       "Status": status,
       "ContentType": contentType,
       "Data": data,
+      "ParsedCategory": parsedCategory,
       "ParsedData": parsedData
     }
   },
@@ -94,7 +112,8 @@ module.exports = {
     let request = {
       "Name": body.Name,
       "Url": body.Url,
-      "JsonPath": body.JsonPath,
+      "JsonPathCategory": body.JsonPathCategory,
+      "JsonPathData": body.JsonPathData,
       "Method": body.Method,
       "RequestBody": body.RequestBody,
       "ContentType": body.ContentType,

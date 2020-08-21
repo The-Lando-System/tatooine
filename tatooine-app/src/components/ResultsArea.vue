@@ -16,8 +16,9 @@
       </div>
     </div>
     <div ref="resultsPane" class="result-data-pane">
+      <pre v-if="response && response.ParsedCategory" id="parsed-category-pre">Parsed Category: {{response.ParsedCategory}}</pre>
+      <pre v-if="response && response.ParsedData" id="parsed-data-pre">Parsed Data: {{response.ParsedData}}</pre>
       <div v-if="loading" class="loading"><i class="fas fa-2x fa-circle-notch fa-spin"></i></div>
-      <pre id="parsed-results-pre">Parsed Result: {{response.ParsedData}}</pre>
       <pre id="results-pre">{{response.Data}}</pre>
       <iframe id="results-iframe"></iframe>
     </div>
@@ -127,10 +128,6 @@ export default {
 }
 
 #results-pre {
-  overflow: unset;
-}
-
-#parsed-results-pre {
   overflow: unset;
 }
 

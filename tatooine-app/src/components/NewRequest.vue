@@ -21,7 +21,8 @@ export default {
         'Method':'Get',
         'RequestBody':'',
         'AuthType':'None',
-        'JsonPath':'$.currentDateTime'
+        'JsonPathCategory':'',
+        'JsonPathData':''
       }
     }
   },
