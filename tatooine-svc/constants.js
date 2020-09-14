@@ -3,6 +3,6 @@ module.exports = {
   ADMIN_EMAILS: {
     'matt.voget@gmail.com' : true
   },
-  PORT: process.env.PORT | 3000,
+  PORT: process.env.PORT | 3001,
   DB_CONNECTION: process.env.DB_CONNECTION
 };

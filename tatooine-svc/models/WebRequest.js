@@ -16,4 +16,4 @@ const requestSchema = new mongoose.Schema({
   JsonPathData:     { type: String, default: '' }
 });
 
-module.exports = mongoose.model('WebRequest', requestSchema, 'Request');
+module.exports = mongoose.model('WebRequest', requestSchema, 'WebRequests');
